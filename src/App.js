@@ -1,24 +1,55 @@
-import logo from './logo.svg';
+import React, { useEffect } from 'react';
 import './App.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from "react-router-dom";
+import ProductList from './Products';
+import Login from './Login';
+
+
+
 
 function App() {
+
+  useEffect(() => {
+    console.log(window.location.href)
+
+    if (window.location.href.startsWith("https://ecart-sell.web.app")) {
+      window.location.href = "https://ecart-sell.firebaseapp.com"
+    }
+  
+  })
+
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+ <Router>
+      <div className="App">
+       
+        <Switch>
+          <Route exact path="/">
+            {localStorage.getItem("loggedIn") == "true" ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
+          </Route>
+
+          <Route path="/login">
+            <Login />
+          </Route>
+
+          <Route path="/dashboard">
+            {localStorage.getItem("loggedIn") == "true" ? <ProductList /> : <Redirect to="/login" />}
+          </Route>
+
+          <Route path="/:any">
+            {localStorage.getItem("loggedIn") == "true" ? <Redirect to="/dashboard" /> : <Redirect to="/login" />}
+          </Route>
+
+        </Switch>
+        {/* </LoginContext.Provider> */}
+      </div>
+    </Router>
   );
 }
 
